@@ -5,8 +5,13 @@
 import os
 import sys
 import time
+import urllib
 import webbrowser
 from subprocess import Popen, PIPE
+
+
+PORT = 8888
+RESERVED = ';/?:@&=+$,'
 
 
 def listened(port):
@@ -24,7 +29,6 @@ def launch_jupyter(port):
 
 
 if __name__ == '__main__':
-    PORT = 8888
     ipynbs = sys.argv[1:]
 
     if not listened(PORT):
@@ -35,9 +39,9 @@ if __name__ == '__main__':
 
     if ipynbs:
         for ipynb in ipynbs:
-            url = 'http://localhost:{}/notebooks/{}'
             path = os.path.relpath(ipynb, os.environ['HOME'])
-            webbrowser.open(url.format(PORT, path))
+            url  = 'http://localhost:{}/notebooks/{}'.format(PORT, path)
+            webbrowser.open(urllib.quote(url, RESERVED))
     else:
-        url = 'http://localhost:{}/tree'
-        webbrowser.open(url.format(PORT))
+        url = 'http://localhost:{}/tree'.format(PORT)
+        webbrowser.open(urllib.quote(url, RESERVED))
